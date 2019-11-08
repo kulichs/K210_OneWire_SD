@@ -13,12 +13,64 @@ DallasTemperature sensors(&oneWire);
 
 int pocetZarizeni; //Počet nalezenych čidel
 
-DeviceAddress adresaZarizeni  //Adresa nalezeného čidla
+DeviceAddress adresaZarizeni;  //Adresa nalezeného čidla
+
+// Funkce pro výpis adresy zařízení
+void printAddress(DeviceAddress deviceAddress) {
+  for (uint8_t i = 0; i < 8; i++) {
+    if (deviceAddress[i] < 16) Serial.print("0");
+      Serial.print(deviceAddress[i], HEX);
+  }
+}
 
 void setup() {
-  // put your setup code here, to run once:
+  //Spuštění serial portu a nastaveni rychlosti komunikace
+  Serial.begin(115200);
+  //Spuštění knihovny DallasTemperature
+  sensors.begin();
+  //Počet zařízení na sběrnici
+  pocetZarizeni = sensors.getDeviceCount();
+  // Nalezenych zařízení na sběrnici
+  Serial.println("Hledám zařízení...");
+  Serial.print("Nalezeno ");
+  Serial.print(pocetZarizeni, DEC);
+  Serial.println(" zařízení.");
+
+  // Smyčka pro prochazení zařízení a vypíše jejich adresu
+  for(int i=0;i<pocetZarizeni; i++) {
+    // Hledám adresu
+    if(sensors.getAddress(adresaZarizeni, i)) {
+      Serial.print("Nalezeno zařízení  ");
+      Serial.print(i, DEC);
+      Serial.print(" s adresou: ");
+      printAddress(adresaZarizeni);
+      Serial.println();
+    } else {
+      Serial.print("Found ghost device at ");
+      Serial.print(i, DEC);
+      Serial.print(" but could not detect address. Check power and cabling");
+    }
+  }
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  sensors.requestTemperatures(); // Pošleme příkaz pro získaní teploty
+  // Procházím zařízení a ypisuji teplotu
+for(int i=0;i<pocetZarizeni; i++) {
+  // Hledám na sběrnici zařízeni s adresou
+  if(sensors.getAddress(adresaZarizeni, i)){
+
+  // Výstup zařízeni ID
+  Serial.print("Teplota zařízení: ");
+  Serial.print(i,DEC);
+  // Výpis dat
+  float tempC = sensors.getTempC(adresaZarizeni);
+  Serial.print(" = ");
+  Serial.print(tempC);
+  Serial.print(" °C s HEX adresou = ");
+  printAddress(adresaZarizeni);
+  Serial.println(" ");
+  }
+ }
+  delay(10000);
 }
