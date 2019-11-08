@@ -62,14 +62,14 @@ for(int i=0;i<pocetZarizeni; i++) {
 
   // Výstup zařízeni ID
   Serial.print("Teplota zařízení: ");
-  Serial.print(i,DEC);
+  //Serial.print(i,DEC);
+  printAddress(adresaZarizeni);
   // Výpis dat
   float tempC = sensors.getTempC(adresaZarizeni);
   Serial.print(" = ");
   Serial.print(tempC);
-  Serial.print(" °C s HEX adresou = ");
-  printAddress(adresaZarizeni);
-  Serial.println(" ");
+  Serial.print(" °C ");
+  Serial.println();
   }
  }
   delay(10000);
