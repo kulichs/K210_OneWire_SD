@@ -25,7 +25,7 @@ void printAddress(DeviceAddress deviceAddress) {
 
 void setup() {
   //Spuštění serial portu a nastaveni rychlosti komunikace
-  Serial.begin(115200);
+  Serial.begin(9600);
   //Spuštění knihovny DallasTemperature
   sensors.begin();
   //Počet zařízení na sběrnici
