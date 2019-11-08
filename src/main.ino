@@ -1,7 +1,10 @@
 #include <Arduino.h>
 #include <OneWire.h> // Má upravena knihovna pro K210
 #include <DallasTemperature.h>
+#include <SPI.h>
+#include <SD.h>
 
+File soubor;
 // Určíme na kterem pinu je připojena OneWire sběrnice - tady na pinu 30
 #define ONE_WIRE_BUS 30
 
@@ -23,9 +26,25 @@ void printAddress(DeviceAddress deviceAddress) {
   }
 }
 
+// Funkce pro výpis adresy zařízení do souboru
+void souborAddress(DeviceAddress deviceAddress) {
+  for (uint8_t i = 0; i < 8; i++) {
+    if (deviceAddress[i] < 16) Serial.print("0");
+      soubor.print(deviceAddress[i], HEX);
+  }
+}
+
 void setup() {
   //Spuštění serial portu a nastaveni rychlosti komunikace
   Serial.begin(9600);
+  //Spuštění SD knihovny
+  Serial.print("Inicalizuji SD kartu...");
+
+  if (!SD.begin(29)) {
+    Serial.println("inicializace se nepovedla!");
+    while (1);
+  }
+  Serial.println("inicializace hotova.");
   //Spuštění knihovny DallasTemperature
   sensors.begin();
   //Počet zařízení na sběrnici
@@ -70,6 +89,12 @@ for(int i=0;i<pocetZarizeni; i++) {
   Serial.print(tempC);
   Serial.print(" °C ");
   Serial.println();
+  soubor = SD.open("cidla.csv", FILE_WRITE);
+  souborAddress(adresaZarizeni);
+  soubor.print(" = ");
+  soubor.print(tempC);
+  soubor.println();
+  soubor.close();
   }
  }
   delay(10000);
