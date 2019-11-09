@@ -5,8 +5,8 @@
 #include <SD.h>
 
 File soubor;
-// Určíme na kterem pinu je připojena OneWire sběrnice - tady na pinu 30
-#define ONE_WIRE_BUS 30
+// Určíme na kterem pinu je připojena OneWire sběrnice
+#define ONE_WIRE_BUS 9
 
 //Nastaví oneWire pro komunikaci s jakýmkoli zařízením na OneWire
 OneWire oneWire(ONE_WIRE_BUS);
